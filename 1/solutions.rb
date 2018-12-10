@@ -3,9 +3,9 @@
 # solutions to part 1 and 2 of:
 # https://adventofcode.com/2018/day/1
 
-##################
+################
 # begin part 1 #
-##################
+################
 
 # make sure we get the path relative to the running script (this file)
 # otherwise if we're executing the script from project_root/ vs project_root/1/
@@ -19,9 +19,9 @@ resulting_frequency = frequency_changes.reduce(initial_frequency, &:+)
 puts "Day 1 Part 1 solution:", resulting_frequency
 
 
-##################
+################
 # begin part 2 #
-##################
+################
 
 require "set"
 
