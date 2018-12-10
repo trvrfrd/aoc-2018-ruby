@@ -7,6 +7,7 @@
 # begin part 1 #
 ################
 
+# what if I did things... the OOP way?!
 class BoxID
   attr_reader :id
 
@@ -24,6 +25,27 @@ class BoxID
 
   def letter_repeated_n_times? n
     letter_counts.values.any? { |count| count == n }
+  end
+
+  def differ_by_one_letter? other_box_id
+    differing_letter_counts = 0
+    (0...id.length).each do |idx|
+      differing_letter_counts += 1 if id[idx] != other_box_id.id[idx]
+      return false if differing_letter_counts > 1
+    end
+
+    true
+  end
+
+  def letters_in_common_with other_box_id
+    common_letters = id
+    id.each_char.with_index do |_, idx|
+      if id[idx] != other_box_id.id[idx]
+        common_letters[idx] = ""
+        break
+      end
+    end
+    common_letters
   end
 end
 
@@ -47,3 +69,18 @@ puts "Day 2 Part 1 solution:", checksum
 ################
 # begin part 2 #
 ################
+
+letters_in_common = ""
+
+# I'll bet a trie or something would be good for this
+# too bad I don't know anything so I did it the brute force way :(
+# but hey Array#permutaion is pretty fun and smart
+# and look at that (block argument destructuring)!
+box_ids.permutation(2).each do |(id1, id2)|
+  if id1.differ_by_one_letter? id2
+    letters_in_common = id1.letters_in_common_with id2
+    break
+  end
+end
+
+puts "Day 2 Part 2 solution:", letters_in_common
