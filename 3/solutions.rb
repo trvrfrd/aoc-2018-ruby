@@ -8,40 +8,53 @@
 ################
 
 class Claim
-  attr_reader :x, :y, :width, :height
+  attr_reader :id, :x, :y, :width, :height
 
   # ooooo boy wish I knew regexes better
   # actually I did fine nevermind I am perfect
   PARSE_REGEX = /#(?<id>\d+) @ (?<x>\d+),(?<y>\d+): (?<width>\d+)x(?<height>\d+)/
 
-  def initialize x, y , width, height
+  def self.parse(claim_str)
+    match = PARSE_REGEX.match(claim_str)
+    self.new(
+      id: match["id"],
+      x: match["x"],
+      y: match["y"],
+      width: match["width"],
+      height: match["height"]
+    )
+  end
+
+  def initialize id:, x:, y:, width:, height:
+    @id = id
     @x = x.to_i
     @y = y.to_i
     @width = width.to_i
     @height = height.to_i
   end
 
-  def self.parse(claim_str)
-    match = PARSE_REGEX.match(claim_str)
-    self.new(
-      match["x"],
-      match["y"],
-      match["width"],
-      match["height"]
-    )
+  def x_range
+    @x_range ||= (x...(x + width))
+  end
+
+  def y_range
+    @y_range ||= (y...(y + height))
+  end
+
+  def overlap_with? other_claim
+    overlapping_x_squares = x_range.to_a & other_claim.x_range.to_a
+    overlapping_y_squares = y_range.to_a & other_claim.y_range.to_a
+
+    overlapping_x_squares.length > 0 && overlapping_y_squares.length > 0
   end
 
   # this is somewhat of a mess, eh?
   # also I now realize this approach is not useful for the actual problem at hand
   # so this is all WORTHLESS at least for Part 1 but I'm keeping it
+  # and then I refactored it so it's less of a mess, wow
   def overlapping_area_with other_claim
-    x_edge = (x...(x + width)).to_a
-    other_x_edge = (other_claim.x...(other_claim.x + other_claim.width)).to_a
-    overlapping_x_squares = x_edge & other_x_edge
-
-    y_edge = (y...(y + height)).to_a
-    other_y_edge = (other_claim.y...(other_claim.y + other_claim.height)).to_a
-    overlapping_y_squares = y_edge & other_y_edge
+    overlapping_x_squares = x_range.to_a & other_claim.x_range.to_a
+    overlapping_y_squares = y_range.to_a & other_claim.y_range.to_a
 
     overlapping_x_squares.length * overlapping_y_squares.length
   end
@@ -53,8 +66,8 @@ class Fabric
   end
 
   def mark_claim claim
-    (claim.x...(claim.x + claim.width)).each do |x|
-      (claim.y...(claim.y + claim.height)).each do |y|
+    claim.x_range.each do |x|
+      claim.y_range.each do |y|
         @claim_counts[x][y] += 1
       end
     end
@@ -67,7 +80,7 @@ class Fabric
   end
 end
 
-# look at this methodical scientific testing preserved for ever
+# look at this methodical scientific testing apparatus preserved for ever
 #
 # test_input = <<~EOS
 # #1 @ 1,3: 4x4
@@ -88,3 +101,22 @@ claims.each { |claim| fabric.mark_claim claim }
 sqaure_inches_of_fabric_within_two_or_more_claims = fabric.multiply_claimed_square_inches
 
 puts "Day 3 Part 1 solution:", sqaure_inches_of_fabric_within_two_or_more_claims
+
+
+################
+# begin part 2 #
+################
+
+# it's brute force and slow as hell but it's cute
+non_overlapping_claims = claims.select do |claim|
+  claims.none? do |other_claim|
+    next if claim == other_claim
+    claim.overlap_with? other_claim
+  end
+end
+
+if non_overlapping_claims.length != 1
+  puts "i fucked up"
+else
+  puts "Day 3 Part 2 solution:", non_overlapping_claims.first.id
+end
