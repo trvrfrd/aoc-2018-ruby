@@ -78,9 +78,9 @@ letters_in_common = ""
 
 # I'll bet a trie or something would be good for this
 # too bad I don't know anything so I did it the brute force way :(
-# but hey Array#permutaion is pretty fun and smart
+# but hey Array#combination is pretty fun and smart
 # and look at that (block argument destructuring)!
-boxes.permutation(2).each do |(box1, box2)|
+boxes.combination(2).each do |(box1, box2)|
   if box1.differ_by_one_letter? box2
     letters_in_common = box1.letters_in_common_with box2
     break
