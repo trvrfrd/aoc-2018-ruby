@@ -108,15 +108,15 @@ puts "Day 3 Part 1 solution:", sqaure_inches_of_fabric_within_two_or_more_claims
 ################
 
 # it's brute force and slow as hell but it's cute
-non_overlapping_claims = claims.select do |claim|
+non_overlapping_claim = claims.find do |claim|
   claims.none? do |other_claim|
     next if claim == other_claim
     claim.overlap_with? other_claim
   end
 end
 
-if non_overlapping_claims.length != 1
+if non_overlapping_claim.nil?
   puts "i fucked up"
 else
-  puts "Day 3 Part 2 solution:", non_overlapping_claims.first.id
+  puts "Day 3 Part 2 solution:", non_overlapping_claim.id
 end
