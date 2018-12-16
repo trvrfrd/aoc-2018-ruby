@@ -41,11 +41,16 @@ class Claim
     @y_range ||= (y...(y + height))
   end
 
-  def overlap_with? other_claim
-    overlapping_x_squares = x_range.to_a & other_claim.x_range.to_a
-    overlapping_y_squares = y_range.to_a & other_claim.y_range.to_a
+  def x_overlap_with other_claim
+    x_range.to_a & other_claim.x_range.to_a
+  end
 
-    overlapping_x_squares.length > 0 && overlapping_y_squares.length > 0
+  def y_overlap_with other_claim
+    y_range.to_a & other_claim.y_range.to_a
+  end
+
+  def overlaps_with? other_claim
+    x_overlap_with(other_claim).length > 0 && y_overlap_with(other_claim).length > 0
   end
 
   # this is somewhat of a mess, eh?
@@ -53,10 +58,7 @@ class Claim
   # so this is all WORTHLESS at least for Part 1 but I'm keeping it
   # and then I refactored it so it's less of a mess, wow
   def overlapping_area_with other_claim
-    overlapping_x_squares = x_range.to_a & other_claim.x_range.to_a
-    overlapping_y_squares = y_range.to_a & other_claim.y_range.to_a
-
-    overlapping_x_squares.length * overlapping_y_squares.length
+    x_overlap_with(other_claim).length * y_overlap_with(other_claim).length
   end
 end
 
@@ -74,9 +76,9 @@ class Fabric
   end
 
   def multiply_claimed_square_inches
-    @claim_counts.map do |x, y_hash|
+    @claim_counts.map { |x, y_hash|
       y_hash.count { |y, claim_count| claim_count > 1 }
-    end.inject(:+)
+    }.inject(:+)
   end
 end
 
@@ -111,7 +113,7 @@ puts "Day 3 Part 1 solution:", sqaure_inches_of_fabric_within_two_or_more_claims
 non_overlapping_claim = claims.find do |claim|
   claims.none? do |other_claim|
     next if claim == other_claim
-    claim.overlap_with? other_claim
+    claim.overlaps_with? other_claim
   end
 end
 
