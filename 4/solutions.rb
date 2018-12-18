@@ -3,9 +3,6 @@
 # solutions to part 1 and 2 of:
 # https://adventofcode.com/2018/day/4
 
-################
-# begin part 1 #
-################
 
 require "date"
 
@@ -50,10 +47,25 @@ events.each_with_index do |event, index|
 end
 
 
-sleepiest_guard_id, sleepiest_guard_minutes = guards.max_by do |guard_id, sleep_minutes_hash|
+sleepiest_guard_id, sleepiest_minutes = guards.max_by do |id, sleep_minutes_hash|
   sleep_minutes_hash.reduce(0) { |sum, (minute, count)| sum + count }
 end
 
-sleepiest_minute = sleepiest_guard_minutes.max_by { |minute, count| count }[0]
+sleepiest_minute = sleepiest_minutes.max_by { |minute, count| count }[0]
 
 puts "Day 4 Part 1 solution:", sleepiest_guard_id * sleepiest_minute
+
+
+################
+# begin part 2 #
+################
+
+# guards.each { |id, hash| p hash.values.max }
+
+other_sleepiest_guard_id, other_sleepiest_minutes = guards.max_by do |id, sleep_minutes_hash|
+  sleep_minutes_hash.values.max || 0
+end
+
+sleepiest_minute_of_all = other_sleepiest_minutes.max_by { |minute, count| count }[0]
+
+puts "Day 4 Part 2 solution:", other_sleepiest_guard_id * sleepiest_minute_of_all
