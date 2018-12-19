@@ -33,7 +33,7 @@ guard_on_duty = nil
 events.each_with_index do |event, index|
   case event[:verb]
   when "begins"
-    guards[event[:guard_id]] ||= Hash.new 0
+    guards[event[:guard_id]] ||= Array.new(99, 0)
     guard_on_duty = guards[event[:guard_id]]
   when "falls"
     sleep_start = event[:datetime].min
@@ -47,11 +47,11 @@ events.each_with_index do |event, index|
 end
 
 
-sleepiest_guard_id, sleepiest_minutes = guards.max_by do |id, sleep_minutes_hash|
-  sleep_minutes_hash.reduce(0) { |sum, (minute, count)| sum + count }
+sleepiest_guard_id, sleepiest_minutes = guards.max_by do |id, sleep_minutes|
+  sleep_minutes.reduce(&:+)
 end
 
-sleepiest_minute = sleepiest_minutes.max_by { |minute, count| count }[0]
+sleepiest_minute = sleepiest_minutes.to_enum.with_index.max[1]
 
 puts "Day 4 Part 1 solution:", sleepiest_guard_id * sleepiest_minute
 
@@ -60,12 +60,10 @@ puts "Day 4 Part 1 solution:", sleepiest_guard_id * sleepiest_minute
 # begin part 2 #
 ################
 
-# guards.each { |id, hash| p hash.values.max }
-
-other_sleepiest_guard_id, other_sleepiest_minutes = guards.max_by do |id, sleep_minutes_hash|
-  sleep_minutes_hash.values.max || 0
+other_sleepiest_guard_id, other_sleepiest_minutes = guards.max_by do |id, sleep_minutes|
+  sleep_minutes.max
 end
 
-sleepiest_minute_of_all = other_sleepiest_minutes.max_by { |minute, count| count }[0]
+sleepiest_minute_of_all = other_sleepiest_minutes.to_enum.with_index.max[1]
 
 puts "Day 4 Part 2 solution:", other_sleepiest_guard_id * sleepiest_minute_of_all
