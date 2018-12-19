@@ -3,6 +3,9 @@
 # solutions to part 1 and 2 of:
 # https://adventofcode.com/2018/day/4
 
+################
+# begin part 1 #
+################
 
 require "date"
 
