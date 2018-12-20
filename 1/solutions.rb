@@ -14,7 +14,7 @@ input_path = File.expand_path("input.txt", File.dirname(__FILE__))
 frequency_changes = File.read(input_path).split("\n").map(&:to_i)
 initial_frequency = 0
 
-resulting_frequency = frequency_changes.reduce(initial_frequency, &:+)
+resulting_frequency = frequency_changes.sum initial_frequency
 
 puts "Day 1 Part 1 solution:", resulting_frequency
 
