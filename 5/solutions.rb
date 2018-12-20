@@ -11,8 +11,8 @@ input_path = File.expand_path("input.txt", File.dirname(__FILE__))
 
 polymer = File.read(input_path).chomp
 
-test_polymer = "dabAcCaCBAcCcaDA"
-stable_test_polymer = "dabCBAcaDA"
+# test_polymer = "dabAcCaCBAcCcaDA"
+# stable_test_polymer = "dabCBAcaDA"
 
 def reactive_pair? mer1, mer2
   mer1 != mer2 && mer1.upcase == mer2.upcase
@@ -43,4 +43,26 @@ def react! mers
   mers
 end
 
-puts "Day 5 Part 1 solution:", react!(polymer.chars).length
+reacted_mers = react! polymer.chars
+
+puts "this solution is slow but something is happening..."
+puts "Day 5 Part 1 solution:", reacted_mers.length
+
+
+################
+# begin part 2 #
+################
+
+shortest_possible_polymer_length = reacted_mers.length
+
+("a".."z").each do |unit|
+  pruned_polymer = polymer.gsub /(#{unit}|#{unit.upcase})/, ""
+  pruned_mers = pruned_polymer.chars
+  reacted_pruned_mers = react! pruned_mers
+  if reacted_pruned_mers.length < shortest_possible_polymer_length
+    shortest_possible_polymer_length = reacted_pruned_mers.length
+  end
+end
+
+puts "this solution is EXTREMELY slow but something is happening..."
+puts "Day 5 Part 2 solution:",  shortest_possible_polymer_length
