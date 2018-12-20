@@ -10,10 +10,10 @@ fi
 # we'll just tell them below that a file already exists
 mkdir "$1" 2> /dev/null
 
-if [ ! -f $1/solutions.rb ]; then
+if [ ! -f "$1/solutions.rb" ]; then
   echo "creating solutions template for day $1..."
-  head -8 1/solutions.rb | sed "s/day\/1/day\/$1/" > $1/solutions.rb
-  chmod +x $1/solutions.rb
+  head -8 1/solutions.rb | sed "s/day\/1/day\/$1/" > "$1/solutions.rb"
+  chmod +x "$1/solutions.rb"
 
   echo "you will need to manually download the puzzle input here:"
   echo "https://adventofcode.com/2018/day/$1/input"
